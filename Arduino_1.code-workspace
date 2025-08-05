@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "Arduino_1",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"delay.h": "c",
+			"global.h": "c"
+		}
+	}
+}
