@@ -49,7 +49,8 @@ void uartPrintInt32(int32_t str) {
             firstDigitPrinted = 1;
             _uartTransmit(ASCII_NUMERIC_BASE + digit);
         }
-    }    
+    } 
+    if (!firstDigitPrinted) _uartTransmit(ASCII_NUMERIC_BASE);  
 }
 
 int32_t uartWriteString(uint8_t *str, uint8_t size) {

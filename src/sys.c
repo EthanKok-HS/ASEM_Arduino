@@ -26,6 +26,8 @@ int32_t SYS_Init(void) {
   uartInit(9600);
   uartPrintln("Started");
 
+  SYS_Error_Check(ADC_Init());
+
   SYS_Error_Check(TIMER0_Init());
   SYS_Error_Check(_pinInterupt_Init());
 

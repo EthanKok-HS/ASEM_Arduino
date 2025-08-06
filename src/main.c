@@ -2,6 +2,7 @@
 
 #define FLICKER_DELAY 1000
 #define READ_DELAY    50
+#define ANALOG_DELAY  500
 
 #define READ_PIN        5
 #define READ_PIN_2      6
@@ -9,12 +10,20 @@
 
 #define MAX_LED_COUNT   4
 
+#define DATASET_SIZE    8
+
 void heartbeat(void);
 void delay(uint32_t delay);
 void led_wave(uint32_t wave_count, uint32_t delay, uint8_t rebound);
+void push_back (uint16_t *dataset, uint16_t data);
+int32_t data_average(const uint16_t* dataset);
 
 volatile uint64_t lastFlickerTime = 0;
 volatile uint64_t lastReadTime = 0;
+volatile uint64_t lastAnalogTime = 0;
+
+uint16_t ana0[DATASET_SIZE];
+uint16_t ana1[DATASET_SIZE];
 
 int main(void) {
   SYS_Error_Check(SYS_Init());
@@ -26,7 +35,7 @@ int main(void) {
   uint32_t led_count = 0;
   uint8_t feedback;
 
-  uartWriteString("Hello World", 11);
+  uint32_t r = 0;
 
   for (;;) {
     heartbeat();
@@ -34,6 +43,18 @@ int main(void) {
 
     if (uartRead(&feedback) == 0) {
       uartPrint(&feedback);
+    }
+
+    if (SYS_TICK - lastAnalogTime > ANALOG_DELAY) {
+      push_back(ana0, ADC_Read_Single(0));
+      push_back(ana1, ADC_Read_Single(1));
+
+      uartPrint("\nAnalog 0: ");
+      uartPrintInt32(data_average(ana0));
+      uartPrint("\tAnalog 1: ");
+      uartPrintInt32(data_average(ana1));
+
+      lastAnalogTime = SYS_TICK;
     }
 
     if (SYS_TICK - lastReadTime > READ_DELAY) {
@@ -97,7 +118,24 @@ void heartbeat(void) {
   }
 }
 
-void delay (uint32_t delay) {
+void delay(uint32_t delay) {
   uint64_t start_time = SYS_TICK;
   while (SYS_TICK < start_time + delay);
+}
+
+void push_back(uint16_t *dataset, uint16_t data) {
+  uint32_t data_size = sizeof(dataset) / sizeof(dataset[0]);
+  for (int32_t i = data_size - 1;  i >= 1; i--) {
+    dataset[i] = dataset[i - 1];
+  }
+  dataset[0] = data;
+}
+
+int32_t data_average(const uint16_t* dataset) {
+  uint32_t total;
+  uint32_t data_size = sizeof(dataset) / sizeof(dataset[0]);
+  for(int32_t i = 0; i < data_size; i++) {
+    total += dataset[i];
+  }
+  return total / data_size;
 }
