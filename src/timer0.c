@@ -10,7 +10,7 @@ int32_t TIMER0_Init(void) {
     TIFR0 = 0x07;   // Reset interrupt flags, cleared by writing a logic one to the flag
     TIMSK0 |= 0x02; // Enable output compare match A
 
-    return TIMER0_SUCCESS;
+    return TIMER_SUCCESS;
 }
 
 ISR(TIMER0_COMPA_vect) {SYS_TICK++;}

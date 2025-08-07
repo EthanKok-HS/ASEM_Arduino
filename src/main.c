@@ -3,10 +3,17 @@
 
 #include "global.h"
 
+#if __has_include("timer2.h")
+#define FLICKER_DELAY 8000
+#define READ_DELAY    400
+#define ANALOG_DELAY  800
+#define COUNTER_DELAY 400
+#else
 #define FLICKER_DELAY 1000
 #define READ_DELAY    50
 #define ANALOG_DELAY  100
 #define COUNTER_DELAY 50
+#endif
 
 #define READ_PIN        5
 #define READ_PIN_2      6

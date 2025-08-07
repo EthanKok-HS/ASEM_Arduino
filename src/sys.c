@@ -22,16 +22,19 @@ void SYS_fatal_error(int32_t err) {
 
 int32_t SYS_Init(void) {
   SYS_TICK = 0;
+  
+#if __has_include("timer2.h")
+  SYS_Error_Check(TIMER2_Init());
+#else
+  SYS_Error_Check(TIMER0_Init());
+#endif
 
   uartInit(9600);
   uartPrintln("Started");
 
   SYS_Error_Check(ADC_Init());
   SYS_Error_Check(I2C_Init());
-
-  SYS_Error_Check(TIMER0_Init());
   SYS_Error_Check(_pinInterupt_Init());
-
   SYS_Error_Check(GPIO_Init());
   SYS_Error_Check(GPIO_Mode(LED_DEBUG_PIN, GPIO_OUTPUT));
 
