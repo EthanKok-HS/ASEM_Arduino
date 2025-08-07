@@ -41,6 +41,7 @@ int32_t I2C_Address_Read(uint8_t add) {
 int32_t I2C_Stop(void) {
     TWCR = 0x94;
     while ((TWCR & 0x10) == 0x10);
+    return I2C_SUCCESS;
 }
 
 int32_t I2C_Data_Send(uint8_t byte) {

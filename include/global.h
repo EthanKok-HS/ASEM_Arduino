@@ -10,5 +10,6 @@
 #include "adc.h"
 #include "timer0.h"
 #include "i2c.h"
+#include "tm1637.h"
 
 #define LED_DEBUG_PIN 13
