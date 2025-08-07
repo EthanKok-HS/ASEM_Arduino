@@ -5,7 +5,7 @@
 
 #define FLICKER_DELAY 1000
 #define READ_DELAY    50
-#define ANALOG_DELAY  500
+#define ANALOG_DELAY  100
 #define COUNTER_DELAY 50
 
 #define READ_PIN        5
@@ -34,7 +34,6 @@ volatile uint64_t lastAnalogTime = 0;
 volatile uint64_t lastCounterTime = 0;
 
 uint16_t ana0[DATASET_SIZE];
-uint16_t ana1[DATASET_SIZE];
 
 int main(void) {
   SYS_Error_Check(SYS_Init());
@@ -51,28 +50,28 @@ int main(void) {
     uartProcess(); 
 
     serial_feedback_loop();
-    //analog_read_loop();
+    analog_read_loop();
 
-    if (SYS_TICK - lastCounterTime > COUNTER_DELAY) {
-      uint8_t currentState = GPIO_Read(COUNTER_UP_PIN);
-      if (currentState != lastState3) {
-        if (currentState) {
-          counter++;
-          TM1637_Write(counter);
-        }
-        lastState3 = currentState;
-      }
+    // if (SYS_TICK - lastCounterTime > COUNTER_DELAY) {
+    //   uint8_t currentState = GPIO_Read(COUNTER_UP_PIN);
+    //   if (currentState != lastState3) {
+    //     if (currentState) {
+    //       counter++;
+    //       TM1637_Write(counter);
+    //     }
+    //     lastState3 = currentState;
+    //   }
 
-      currentState = GPIO_Read(COUNTER_RESET_PIN);
-      if (currentState != lastState4) {
-        if (currentState) {
-          counter = 0;
-          TM1637_Write(counter);
-        }
-        lastState4 = currentState;
-      }
-      lastCounterTime = SYS_TICK;
-    }
+    //   currentState = GPIO_Read(COUNTER_RESET_PIN);
+    //   if (currentState != lastState4) {
+    //     if (currentState) {
+    //       counter = 0;
+    //       TM1637_Write(counter);
+    //     }
+    //     lastState4 = currentState;
+    //   }
+    //   lastCounterTime = SYS_TICK;
+    // }
 
     if (SYS_TICK - lastReadTime > READ_DELAY) {
       uint8_t currentState = GPIO_Read(READ_PIN);
@@ -152,12 +151,10 @@ void serial_feedback_loop(void) {
 void analog_read_loop(void) {
   if (SYS_TICK - lastAnalogTime > ANALOG_DELAY) {
     push_back(ana0, ADC_Read_Single(0));
-    push_back(ana1, ADC_Read_Single(1));
 
     uartPrint("\nAnalog 0: ");
     uartPrintInt32(data_average(ana0));
-    uartPrint("\tAnalog 1: ");
-    uartPrintInt32(data_average(ana1));
+    TM1637_Write(data_average(ana0));
 
     lastAnalogTime = SYS_TICK;
   }

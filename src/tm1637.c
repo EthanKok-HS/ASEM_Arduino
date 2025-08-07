@@ -43,23 +43,23 @@ int32_t TM1637_Write(int16_t value) {
     SYS_Error_Check(I2C_Address_Write(0xC0));
     if (value > 9999 || value < -999) {
         for (uint16_t i = 0; i < 6; i++) {
-            I2C_Data_Send(DISP_DASH);
+            SYS_Error_Check(I2C_Data_Send(DISP_DASH));
         }
     }
     else if(value >= 0) {
-        I2C_Data_Send(_decode(value % 10));
-        I2C_Data_Send(_decode((value % 100) / 10));
-        I2C_Data_Send(_decode((value % 1000) / 100));
-        I2C_Data_Send(_decode(value / 1000));
-        I2C_Data_Send(0x00);
-        I2C_Data_Send(0x00);
+        SYS_Error_Check(I2C_Data_Send(_decode(value % 10)));
+        SYS_Error_Check(I2C_Data_Send(_decode((value % 100) / 10)));
+        SYS_Error_Check(I2C_Data_Send(_decode((value % 1000) / 100)));
+        SYS_Error_Check(I2C_Data_Send(_decode(value / 1000)));
+        SYS_Error_Check(I2C_Data_Send(0x00));
+        SYS_Error_Check(I2C_Data_Send(0x00));
     } else {
-        I2C_Data_Send(_decode(value % 10));
-        I2C_Data_Send(_decode((value % 100)) / 10);
-        I2C_Data_Send(_decode((value % 1000) / 100));
-        I2C_Data_Send(DISP_DASH);
-        I2C_Data_Send(0x00);
-        I2C_Data_Send(0x00);
+        SYS_Error_Check(I2C_Data_Send(_decode(value % 10)));
+        SYS_Error_Check(I2C_Data_Send(_decode((value % 100)) / 10));
+        SYS_Error_Check(I2C_Data_Send(_decode((value % 1000) / 100)));
+        SYS_Error_Check(I2C_Data_Send(DISP_DASH));
+        SYS_Error_Check(I2C_Data_Send(0x00));
+        SYS_Error_Check(I2C_Data_Send(0x00));
     }
     SYS_Error_Check(I2C_Stop());
 

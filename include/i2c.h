@@ -9,7 +9,9 @@
 #define I2C_ERROR_DATA_SENT_NO_ACK  (I2C_ERROR_BASE + 5)
 #define I2C_ERROR_DATA_READ_ACK     (I2C_ERROR_BASE + 6)
 #define I2C_ERROR_DATA_READ_NO_ACK  (I2C_ERROR_BASE + 7)
+#define I2C_ERROR_TIMEOUT           (I2C_ERROR_BASE + 9)
 
+#define I2C_TIMEOUT_DURATION    10
 
 extern int32_t I2C_Init(void);
 extern int32_t I2C_Start(void);
