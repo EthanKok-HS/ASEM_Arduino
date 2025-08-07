@@ -9,5 +9,6 @@
 #include "uart.h"
 #include "adc.h"
 #include "timer0.h"
+#include "i2c.h"
 
 #define LED_DEBUG_PIN 13
