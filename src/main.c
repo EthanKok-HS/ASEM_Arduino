@@ -3,17 +3,10 @@
 
 #include "global.h"
 
-#if __has_include("timer2.h")
-#define FLICKER_DELAY 8000
-#define READ_DELAY    400
-#define ANALOG_DELAY  800
-#define COUNTER_DELAY 400
-#else
 #define FLICKER_DELAY 1000
 #define READ_DELAY    50
 #define ANALOG_DELAY  100
 #define COUNTER_DELAY 50
-#endif
 
 #define READ_PIN        5
 #define READ_PIN_2      6
@@ -50,14 +43,23 @@ int main(void) {
   uint32_t led_count = 0; 
 
   uint16_t counter = 0;
-  TM1637_Write(counter);
+  //TM1637_Write(counter);
+
+  SWUART_Write_String("Hello", 5);
 
   for (;;) {
     heartbeat();
     uartProcess(); 
 
     serial_feedback_loop();
-    analog_read_loop();
+    //analog_read_loop();  
+
+    if (SWUART_RX_BYTES) {
+      uint8_t b;
+      SYS_Error_Check(SWUART_Read(&b));
+      uartPrintInt32(b);
+      uartPrint(",");
+    }
 
     // if (SYS_TICK - lastCounterTime > COUNTER_DELAY) {
     //   uint8_t currentState = GPIO_Read(COUNTER_UP_PIN);
@@ -81,6 +83,7 @@ int main(void) {
     // }
 
     if (SYS_TICK - lastReadTime > READ_DELAY) {
+
       uint8_t currentState = GPIO_Read(READ_PIN);
       if (currentState != lastState1) {
         if (currentState) {
@@ -161,7 +164,7 @@ void analog_read_loop(void) {
 
     uartPrint("\nAnalog 0: ");
     uartPrintInt32(data_average(ana0));
-    TM1637_Write(data_average(ana0));
+    //TM1637_Write(data_average(ana0));
 
     lastAnalogTime = SYS_TICK;
   }
